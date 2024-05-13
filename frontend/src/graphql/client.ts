@@ -46,10 +46,10 @@ export const CREATE_COUNTRY = gql(/* GraphQL */ `
 			name
 			code
 			emoji
-			continent {
-				id
-				name
-			}
+			# continent {
+			# 	id
+			# 	name
+			# }
 		}
 	}
 `);

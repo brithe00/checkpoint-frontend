@@ -23,13 +23,13 @@ const CountryDetails = () => {
 	if (error) return <p>Error : {error.message}</p>;
 
 	return (
-		<div class="flex items-center justify-center h-screen">
+		<div className="flex items-center justify-center h-screen">
 			<Card>
 				<CardHeader>
 					<CardTitle>
 						#{data.country.id} - {data.country.name}
 					</CardTitle>
-					<CardDescription>{data.country.continent.name}</CardDescription>
+					<CardDescription>{data.country.continent?.name}</CardDescription>
 				</CardHeader>
 				<CardContent className="text-9xl">{data.country.emoji}</CardContent>
 				<CardFooter className="flex justify-between">

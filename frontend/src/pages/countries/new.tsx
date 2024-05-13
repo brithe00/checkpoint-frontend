@@ -19,20 +19,18 @@ import {
 import { useRouter } from 'next/router';
 
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_CONTINENTS, CREATE_COUNTRY } from '../../graphql/client';
+import {
+	GET_CONTINENTS,
+	CREATE_COUNTRY,
+	GET_COUNTRIES,
+} from '../../graphql/client';
 
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 const NewCountry = () => {
-	const {
-		register,
-		handleSubmit,
-		watch,
-		formState: { errors },
-		reset,
-	} = useForm();
-
 	const router = useRouter();
+
+	const { register, handleSubmit, reset, watch } = useForm();
 
 	const { loading, error, data } = useQuery(GET_CONTINENTS);
 
@@ -43,33 +41,22 @@ const NewCountry = () => {
 			loading: createCountryLoading,
 			error: createCountryError,
 		},
-	] = useMutation(CREATE_COUNTRY);
+	] = useMutation(CREATE_COUNTRY, {
+		refetchQueries: [GET_COUNTRIES, 'GetAds'],
+		onCompleted: () => router.push('/') as any,
+	});
 
 	if (loading || createCountryLoading) return <p>Loading...</p>;
 	if (error) return <p>Error : {error.message}</p>;
 	if (createCountryError) return <p>Error : {createCountryError.message}</p>;
 
-	const onSubmit = async (data) => {
-		try {
-			console.log(data);
-			const result = await createCountry({
-				variables: {
-					data: {
-						name: data.name,
-						code: data.code,
-						emoji: data.emoji,
-					},
-				},
-			});
-			console.log('result', result);
-			reset();
-		} catch (err) {
-			console.error(err);
-		}
+	const onSubmit = (data) => {
+		createCountry({ variables: { data } });
+		reset();
 	};
 
 	return (
-		<div class="flex items-center justify-center h-screen">
+		<div className="flex items-center justify-center h-screen">
 			<Card className="w-[350px]">
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<CardHeader>
@@ -79,19 +66,31 @@ const NewCountry = () => {
 						<div className="grid w-full items-center gap-4">
 							<div className="flex flex-col space-y-1.5">
 								<Label htmlFor="name">Name</Label>
-								<Input id="name" placeholder="Name of the country" />
+								<Input
+									id="name"
+									placeholder="Name of the country"
+									{...register('name')}
+								/>
 							</div>
 							<div className="flex flex-col space-y-1.5">
 								<Label htmlFor="code">Country Code</Label>
-								<Input id="code" placeholder="Code of the country" />
+								<Input
+									id="code"
+									placeholder="Code of the country"
+									{...register('code')}
+								/>
 							</div>
 							<div className="flex flex-col space-y-1.5">
 								<Label htmlFor="emoji">Emoji</Label>
-								<Input id="emoji" placeholder="Emoji of the country" />
+								<Input
+									id="emoji"
+									placeholder="Emoji of the country"
+									{...register('emoji')}
+								/>
 							</div>
 							{/* <div className="flex flex-col space-y-1.5">
 								<Label htmlFor="continent">Continent</Label>
-								<Select>
+								<Select {...register('continentId')}>
 									<SelectTrigger id="continent">
 										<SelectValue placeholder="Select" />
 									</SelectTrigger>

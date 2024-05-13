@@ -30,7 +30,7 @@ export default function Countries() {
 									<CardTitle>
 										#{country.id} - {country.name}
 									</CardTitle>
-									<CardDescription>{country.continent.name}</CardDescription>
+									<CardDescription>{country.continent?.name}</CardDescription>
 								</CardHeader>
 								<CardContent className="text-9xl">{country.emoji}</CardContent>
 								<CardFooter>
